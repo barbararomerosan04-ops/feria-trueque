@@ -4,106 +4,108 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Feria Trueque</title>
+<title>Feria Trueque Falabella</title>
 
 <style>
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #62693f;
+  width: 100%;
+  min-height: 100%;
+  background: #62693f;
 }
 
 .pantalla {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* LA PIEZA COMPLETA */
-.pieza-contenedor {
-    position: relative;
-
-    height: 100vh;
-    width: auto;
-    aspect-ratio: 0.3333;
-
-    flex-shrink: 0;
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #62693f;
 }
 
 .pieza {
-    position: absolute;
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    display: block;
+  position: relative;
+  width: min(33.3333vw, 426.67px);
+  height: auto;
+  display: block;
 }
 
-/* =========================
-   AGUA
-   ========================= */
+/* CONTENEDOR SOBRE LA IMAGEN */
+
+.contenido {
+  position: absolute;
+  width: min(33.3333vw, 426.67px);
+  aspect-ratio: 1 / 3;
+}
+
+/* TAPAMOS SOLO EL NÚMERO ANTIGUO */
+
+.mascara-agua {
+  position: absolute;
+  left: 29%;
+  top: 31%;
+  width: 42%;
+  height: 7.5%;
+  background: #62693f;
+  border-radius: 18px;
+}
+
+.mascara-co2 {
+  position: absolute;
+  left: 29%;
+  top: 69.8%;
+  width: 42%;
+  height: 7.5%;
+  background: #62693f;
+  border-radius: 18px;
+}
+
+/* NÚMERO AGUA */
 
 #agua {
-    position: absolute;
+  position: absolute;
+  left: 29%;
+  top: 31%;
+  width: 42%;
+  height: 7.5%;
 
-    /*
-      POSICIÓN DENTRO DE LA PIEZA
-    */
-    top: 34.0%;
-    left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    width: 100%;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  font-size: clamp(25px, 4.8vw, 42px);
+  color: #7fcfff;
 
-    text-align: center;
-
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-
-    font-size: 6.2%;
-
-    color: #7fcfff;
-
-    z-index: 5;
-
-    line-height: 1;
+  z-index: 10;
 }
 
-
-/* =========================
-   CO2
-   ========================= */
+/* NÚMERO CO2 */
 
 #co2 {
-    position: absolute;
+  position: absolute;
+  left: 29%;
+  top: 69.8%;
+  width: 42%;
+  height: 7.5%;
 
-    top: 70.0%;
-    left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    width: 100%;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  font-size: clamp(25px, 4.8vw, 42px);
+  color: #d7ff32;
 
-    text-align: center;
-
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-
-    font-size: 5.8%;
-
-    color: #d7ff32;
-
-    z-index: 5;
-
-    line-height: 1;
+  z-index: 10;
 }
 
 </style>
@@ -113,62 +115,60 @@ html, body {
 
 <div class="pantalla">
 
-    <div class="pieza-contenedor">
+  <div style="position:relative;">
 
-        <!-- IMAGEN ORIGINAL -->
-        <img
-            class="pieza"
-            src="Dashboard-Trueque%203.jpg"
-            alt="Feria Trueque Falabella"
-        >
+    <img
+      class="pieza"
+      src="https://raw.githubusercontent.com/barbararomerosan04-ops/feria-trueque/main/Dashboard-Trueque%203.jpg"
+      alt="Feria Trueque Falabella"
+    >
 
-        <!-- DATOS DINÁMICOS -->
-        <div id="agua">182.2</div>
+    <div class="contenido">
 
-        <div id="co2">296.08</div>
+      <div class="mascara-agua"></div>
+      <div class="mascara-co2"></div>
+
+      <div id="agua">182.2</div>
+      <div id="co2">296.08</div>
 
     </div>
 
-</div>
+  </div>
 
+</div>
 
 <script>
 
-async function actualizarDatos() {
+async function actualizar() {
 
-    try {
+  try {
 
-        const respuesta = await fetch(
-            "data.json?v=" + Date.now()
-        );
+    const respuesta = await fetch(
+      "data.json?v=" + Date.now()
+    );
 
-        if (!respuesta.ok) {
-            throw new Error("No se pudo cargar data.json");
-        }
-
-        const datos = await respuesta.json();
-
-        if (datos.agua !== undefined) {
-            document.getElementById("agua").textContent = datos.agua;
-        }
-
-        if (datos.co2 !== undefined) {
-            document.getElementById("co2").textContent = datos.co2;
-        }
-
-    } catch (error) {
-
-        console.log("Error:", error);
-
+    if (!respuesta.ok) {
+      throw new Error("No se pudo cargar data.json");
     }
 
+    const datos = await respuesta.json();
+
+    if (datos.agua !== undefined) {
+      document.getElementById("agua").textContent = datos.agua;
+    }
+
+    if (datos.co2 !== undefined) {
+      document.getElementById("co2").textContent = datos.co2;
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-/* Cargar inmediatamente */
-actualizarDatos();
+actualizar();
 
-/* Actualizar cada 10 segundos */
-setInterval(actualizarDatos, 10000);
+setInterval(actualizar, 10000);
 
 </script>
 
