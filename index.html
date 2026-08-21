@@ -1,266 +1,176 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Feria Trueque</title>
+<title>Feria Trueque</title>
 
-  <style>
+<style>
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #62693f;
-    }
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #62693f;
+}
 
-    /*
-      PANTALLA COMPLETA
-    */
+.pantalla {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    .pantalla {
-      width: 100vw;
-      height: 100vh;
+/* LA PIEZA COMPLETA */
+.pieza-contenedor {
+    position: relative;
 
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    height: 100vh;
+    width: auto;
+    aspect-ratio: 0.3333;
 
-      overflow: hidden;
-      background: #62693f;
-    }
+    flex-shrink: 0;
+}
 
+.pieza {
+    position: absolute;
+    inset: 0;
 
-    /*
-      CONTENEDOR DE LA PIEZA
+    width: 100%;
+    height: 100%;
 
-      IMPORTANTE:
-      Todo lo que se mueve encima de la imagen
-      está dentro de este contenedor.
+    display: block;
+}
 
-      Así los números mantienen exactamente
-      la posición de tu diseño.
-    */
+/* =========================
+   AGUA
+   ========================= */
 
-    .pieza-container {
-      position: relative;
-
-      height: 100vh;
-      width: auto;
-
-      aspect-ratio: auto;
-
-      flex-shrink: 0;
-    }
-
+#agua {
+    position: absolute;
 
     /*
-      IMAGEN ORIGINAL
+      POSICIÓN DENTRO DE LA PIEZA
     */
+    top: 34.0%;
+    left: 0;
 
-    .pieza {
-      display: block;
+    width: 100%;
 
-      height: 100vh;
-      width: auto;
+    text-align: center;
 
-      max-width: none;
-    }
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
 
+    font-size: 6.2%;
 
-    /*
-      NÚMERO DE AGUA
-    */
+    color: #7fcfff;
 
-    #agua {
+    z-index: 5;
 
-      position: absolute;
-
-      /*
-        Posición dentro de la pieza
-      */
-
-      left: 31.5%;
-      top: 34.8%;
-
-      width: 37%;
-
-      text-align: center;
-
-      font-family: Arial, Helvetica, sans-serif;
-
-      font-weight: 700;
-
-      font-size: 5.2vh;
-
-      line-height: 1;
-
-      color: #7fcfff;
-
-      z-index: 10;
-
-      white-space: nowrap;
-    }
+    line-height: 1;
+}
 
 
-    /*
-      NÚMERO DE CO2
-    */
+/* =========================
+   CO2
+   ========================= */
 
-    #co2 {
+#co2 {
+    position: absolute;
 
-      position: absolute;
+    top: 70.0%;
+    left: 0;
 
-      left: 31.5%;
-      top: 70.2%;
+    width: 100%;
 
-      width: 37%;
+    text-align: center;
 
-      text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
 
-      font-family: Arial, Helvetica, sans-serif;
+    font-size: 5.8%;
 
-      font-weight: 700;
+    color: #d7ff32;
 
-      font-size: 5.2vh;
+    z-index: 5;
 
-      line-height: 1;
+    line-height: 1;
+}
 
-      color: #d7ff32;
-
-      z-index: 10;
-
-      white-space: nowrap;
-    }
-
-
-  </style>
-
+</style>
 </head>
-
 
 <body>
 
-  <div class="pantalla">
+<div class="pantalla">
 
-    <div class="pieza-container">
+    <div class="pieza-contenedor">
 
-      <!-- IMAGEN ORIGINAL -->
+        <!-- IMAGEN ORIGINAL -->
+        <img
+            class="pieza"
+            src="Dashboard-Trueque%203.jpg"
+            alt="Feria Trueque Falabella"
+        >
 
-      <img
-        class="pieza"
-        src="Dashboard-Trueque%203.jpg"
-        alt="Feria Trueque Falabella"
-      >
+        <!-- DATOS DINÁMICOS -->
+        <div id="agua">182.2</div>
 
-
-      <!-- NÚMEROS DINÁMICOS -->
-
-      <div id="agua">182.2</div>
-
-      <div id="co2">296.08</div>
+        <div id="co2">296.08</div>
 
     </div>
 
-  </div>
+</div>
 
 
-  <script>
+<script>
 
-    /*
-      CARGAR DATOS DESDE data.json
+async function actualizarDatos() {
 
-      La página NO se conecta a Google.
-
-      Lee únicamente el archivo data.json
-      que está alojado en GitHub.
-    */
-
-    async function actualizar() {
-
-      try {
+    try {
 
         const respuesta = await fetch(
-          "data.json?v=" + Date.now()
+            "data.json?v=" + Date.now()
         );
 
         if (!respuesta.ok) {
-          throw new Error("No se pudo cargar data.json");
+            throw new Error("No se pudo cargar data.json");
         }
 
         const datos = await respuesta.json();
 
-
-        /*
-          AGUA
-        */
-
-        if (
-          datos.agua !== undefined &&
-          datos.agua !== null
-        ) {
-
-          document.getElementById("agua").textContent =
-            datos.agua;
-
+        if (datos.agua !== undefined) {
+            document.getElementById("agua").textContent = datos.agua;
         }
 
-
-        /*
-          CO2
-        */
-
-        if (
-          datos.co2 !== undefined &&
-          datos.co2 !== null
-        ) {
-
-          document.getElementById("co2").textContent =
-            datos.co2;
-
+        if (datos.co2 !== undefined) {
+            document.getElementById("co2").textContent = datos.co2;
         }
 
-      }
+    } catch (error) {
 
-      catch (error) {
-
-        console.log(
-          "Error cargando datos:",
-          error
-        );
-
-      }
+        console.log("Error:", error);
 
     }
 
+}
 
-    /*
-      CARGA INICIAL
-    */
+/* Cargar inmediatamente */
+actualizarDatos();
 
-    actualizar();
+/* Actualizar cada 10 segundos */
+setInterval(actualizarDatos, 10000);
 
-
-    /*
-      ACTUALIZA CADA 10 SEGUNDOS
-    */
-
-    setInterval(
-      actualizar,
-      10000
-    );
-
-  </script>
+</script>
 
 </body>
-
 </html>
