@@ -2,7 +2,7 @@ name: Actualizar datos
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 */2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -25,36 +25,19 @@ jobs:
           import csv
           import json
 
-          with open("datos.csv", encoding="utf-8-sig") as f:
+          with open("datos.csv", encoding="utf-8") as f:
               filas = list(csv.reader(f))
 
-          print("Datos encontrados:")
-          for fila in filas[:5]:
-              print(fila)
-
-          # Buscar la fila que contiene los valores numéricos
-          for fila in filas:
-              numeros = []
-
-              for valor in fila:
-                  try:
-                      numeros.append(float(valor.replace(",", ".")))
-                  except:
-                      pass
-
-              if len(numeros) >= 2:
-                  agua = numeros[0]
-                  co2 = numeros[1]
-                  break
+          # Columna F = Agua
+          # Columna G = CO2
+          agua = filas[1][5]
+          co2 = filas[1][6]
 
           with open("data.json", "w", encoding="utf-8") as f:
               json.dump({
-                  "agua": agua,
-                  "co2": co2
-              }, f, ensure_ascii=False, indent=2)
-
-          print("Agua:", agua)
-          print("CO2:", co2)
+                  "agua": float(agua),
+                  "co2": float(co2)
+              }, f)
           PY
 
       - name: Guardar cambios
