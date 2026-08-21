@@ -28,6 +28,7 @@ body {
 .pantalla {
     width: 100%;
     min-height: 100vh;
+
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -35,8 +36,10 @@ body {
 
 .contenedor {
     position: relative;
-    width: 92vw;
-    max-width: 430px;
+
+    width: 100%;
+    max-width: 640px;
+
     margin: 0 auto;
 }
 
@@ -46,13 +49,16 @@ body {
     display: block;
 }
 
+
 /* =========================
    NÚMEROS
    ========================= */
 
 .numero {
     position: absolute;
+
     left: 50%;
+
     transform: translate(-50%, -50%);
 
     width: 100%;
@@ -67,6 +73,7 @@ body {
     white-space: nowrap;
 }
 
+
 /* =========================
    AGUA
    ========================= */
@@ -77,6 +84,7 @@ body {
     font-size: 46px;
 }
 
+
 /* =========================
    CO2
    ========================= */
@@ -85,6 +93,49 @@ body {
     top: 73.95%;
     color: #d5ff32;
     font-size: 46px;
+}
+
+
+/* =========================
+   PANTALLAS GRANDES
+   ========================= */
+
+@media (min-width: 641px) {
+
+    .contenedor {
+        width: 640px;
+        max-width: 640px;
+    }
+
+}
+
+
+/* =========================
+   CELULAR
+   ========================= */
+
+@media (max-width: 640px) {
+
+    .contenedor {
+        width: 100%;
+        max-width: 640px;
+    }
+
+    /*
+       Los números mantienen exactamente
+       la misma posición proporcional.
+    */
+
+    #agua {
+        top: 33.95%;
+        font-size: 46px;
+    }
+
+    #co2 {
+        top: 73.95%;
+        font-size: 46px;
+    }
+
 }
 
 </style>
@@ -113,6 +164,7 @@ body {
     </div>
 
 </div>
+
 
 <script>
 
