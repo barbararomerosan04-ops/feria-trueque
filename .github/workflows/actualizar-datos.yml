@@ -28,16 +28,18 @@ jobs:
           with open("datos.csv", encoding="utf-8") as f:
               filas = list(csv.reader(f))
 
-          # Columna F = Agua
-          # Columna G = CO2
-          agua = filas[1][5]
-          co2 = filas[1][6]
+          # F = CO2 / G = Agua
+          co2 = filas[1][5].replace(",", ".")
+          agua = filas[1][6].replace(",", ".")
 
           with open("data.json", "w", encoding="utf-8") as f:
               json.dump({
                   "agua": float(agua),
                   "co2": float(co2)
               }, f)
+
+          print("Agua:", agua)
+          print("CO2:", co2)
           PY
 
       - name: Guardar cambios
