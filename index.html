@@ -12,7 +12,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   min-height: 100%;
 }
@@ -28,11 +29,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  padding: 10px 0;
 }
 
 .contenedor {
   position: relative;
-  width: min(100vw, 760px);
+  width: min(96vw, 430px);
   margin: 0 auto;
   overflow: hidden;
 }
@@ -43,26 +45,45 @@ body {
   display: block;
 }
 
+/* NÚMEROS */
+
 .numero {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   width: 55%;
   text-align: center;
-  font-size: 38px;
-  font-weight: 500;
+  font-size: clamp(32px, 10vw, 48px);
+  font-weight: 400;
   line-height: 1;
   z-index: 5;
+  white-space: nowrap;
 }
 
+/* AGUA */
 #agua {
-  top: 36.7%;
+  top: 34.7%;
   color: #73b9f2;
 }
 
+/* CO2 */
 #co2 {
-  top: 75.7%;
+  top: 72.8%;
   color: #d5ff32;
+}
+
+@media (max-width: 500px) {
+  .pantalla {
+    padding: 6px 0;
+  }
+
+  .contenedor {
+    width: 96vw;
+  }
+
+  .numero {
+    font-size: clamp(30px, 11vw, 46px);
+  }
 }
 </style>
 </head>
@@ -70,6 +91,7 @@ body {
 <body>
 
 <div class="pantalla">
+
   <div class="contenedor">
 
     <img
@@ -79,26 +101,41 @@ body {
     >
 
     <div id="agua" class="numero">182,20</div>
+
     <div id="co2" class="numero">296,08</div>
 
   </div>
+
 </div>
 
 <script>
 async function actualizarDatos() {
+
   try {
+
     const respuesta = await fetch('data.json?v=' + Date.now());
+
     const data = await respuesta.json();
 
     document.getElementById('agua').textContent =
-      Number(data.agua).toFixed(2).replace('.', ',');
+      Number(data.agua)
+        .toFixed(2)
+        .replace('.', ',');
 
     document.getElementById('co2').textContent =
-      Number(data.co2).toFixed(2).replace('.', ',');
+      Number(data.co2)
+        .toFixed(2)
+        .replace('.', ',');
 
   } catch (error) {
-    console.error('No se pudieron cargar los datos:', error);
+
+    console.error(
+      'No se pudieron cargar los datos:',
+      error
+    );
+
   }
+
 }
 
 actualizarDatos();
