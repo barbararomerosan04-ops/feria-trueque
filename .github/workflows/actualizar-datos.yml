@@ -1,0 +1,46 @@
+name: Actualizar datos
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Descargar datos del Sheet
+        run: |
+          curl -L "https://docs.google.com/spreadsheets/d/1573VG0OhCjv03FrCrLKGTa1HkKU33GJto9isjJXvf5s/export?format=csv&gid=2009250201" -o datos.csv
+
+      - name: Crear data.json
+        run: |
+          python - <<'PY'
+          import csv, json
+
+          with open("datos.csv", encoding="utf-8") as f:
+              filas = list(csv.reader(f))
+
+          agua = filas[1][0]
+          co2 = filas[1][1]
+
+          with open("data.json", "w", encoding="utf-8") as f:
+              json.dump({
+                  "agua": float(agua),
+                  "co2": float(co2)
+              }, f)
+          PY
+
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add data.json
+          git commit -m "Actualizar datos" || exit 0
+          git push
