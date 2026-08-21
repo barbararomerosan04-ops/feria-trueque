@@ -1,294 +1,352 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
   <meta charset="UTF-8">
 
-  <meta name="viewport" content="width=640, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <title>Feria.Trueque</title>
+  <title>Feria Trueque</title>
+
 
   <style>
+
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
+
     html,
     body {
+
+      width: 100%;
+      height: 100%;
+
       margin: 0;
       padding: 0;
-      width: 640px;
-      height: 1920px;
+
       overflow: hidden;
-      background: #59633a;
+
+      background: #62693f;
+
     }
 
-    #pagina {
+
+    /*
+      CONTENEDOR PRINCIPAL
+
+      Mantiene exactamente la proporción
+      vertical de la pieza.
+    */
+
+    .pantalla {
+
       position: relative;
-      width: 640px;
-      height: 1920px;
+
+      width: 100vw;
+      height: 100vh;
+
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+
       overflow: hidden;
+
+      background: #62693f;
+
     }
 
-    /* IMAGEN DE FONDO */
-    #fondo {
+
+    /*
+      LA PIEZA ORIGINAL
+
+      Se adapta a la pantalla sin deformarse.
+    */
+
+    .pieza {
+
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 640px;
-      height: 1920px;
-      display: block;
-      object-fit: fill;
-      z-index: 1;
+
+      width: 100%;
+      height: 100%;
+
+      object-fit: contain;
+
+      object-position: center;
+
     }
 
-    /* =========================
-       DATO DE AGUA
-       ========================= */
+
+    /*
+      CAPA PARA TAPAR EL NÚMERO
+      ORIGINAL DEL AGUA
+    */
+
+    .tapa-agua {
+
+      position: absolute;
+
+      width: 19.5%;
+      height: 4.3%;
+
+      left: 40.25%;
+      top: 35.1%;
+
+      background: #6b7047;
+
+      border: 2px solid #8ed7ff;
+
+      border-radius: 25px;
+
+    }
+
+
+    /*
+      CAPA PARA TAPAR EL NÚMERO
+      ORIGINAL DEL CO2
+    */
+
+    .tapa-co2 {
+
+      position: absolute;
+
+      width: 19.5%;
+      height: 4.3%;
+
+      left: 40.25%;
+      top: 70.6%;
+
+      background: #6b7047;
+
+      border: 2px solid #d7ff4c;
+
+      border-radius: 25px;
+
+    }
+
+
+    /*
+      NÚMERO DE AGUA
+    */
 
     #agua {
+
       position: absolute;
 
-      /*
-        Posición del número de agua.
-        Si después necesitamos moverlo,
-        modificamos solamente estos valores.
-      */
-      left: 320px;
-      top: 690px;
+      left: 0;
 
-      transform: translate(-50%, -50%);
+      width: 100%;
 
-      width: 250px;
+      top: 35.55%;
 
       text-align: center;
 
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 55px;
+
       font-weight: bold;
 
-      color: #75c8ff;
+      font-size: clamp(
+        25px,
+        5vw,
+        70px
+      );
+
+      color: #7fcfff;
 
       z-index: 10;
+
     }
 
 
-    /* =========================
-       DATO DE CO2
-       ========================= */
+    /*
+      NÚMERO DE CO2
+    */
 
     #co2 {
+
       position: absolute;
 
-      /*
-        Posición del número de CO2.
-      */
-      left: 320px;
-      top: 1430px;
+      left: 0;
 
-      transform: translate(-50%, -50%);
+      width: 100%;
 
-      width: 250px;
+      top: 71.05%;
 
       text-align: center;
 
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 55px;
+
       font-weight: bold;
 
-      color: #e3ff00;
+      font-size: clamp(
+        25px,
+        5vw,
+        70px
+      );
+
+      color: #d7ff32;
 
       z-index: 10;
+
     }
 
 
-    /* Mensaje de error oculto */
-    #error {
-      display: none;
-      position: absolute;
-      left: 20px;
-      bottom: 20px;
-      width: 600px;
-      padding: 10px;
-
-      background: rgba(255, 0, 0, 0.8);
-      color: white;
-
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-
-      z-index: 100;
-    }
   </style>
+
 </head>
 
 
 <body>
 
-  <div id="pagina">
 
-    <!-- ==========================================
-         IMAGEN DEL DISEÑO
-         ========================================== -->
+  <div class="pantalla">
+
+
+    <!-- DISEÑO ORIGINAL -->
 
     <img
-      id="fondo"
-      src="imagen-dashboard.png"
-      alt="Feria Trueque Falabella"
+      class="pieza"
+      src="Dashboard-Trueque%203.jpg"
+      alt=""
     >
 
 
-    <!-- ==========================================
-         DATO DE AGUA
-         ========================================== -->
+    <!-- TAPAMOS LOS NÚMEROS IMPRESOS -->
 
-    <div id="agua">—</div>
+    <div class="tapa-agua"></div>
 
-
-    <!-- ==========================================
-         DATO DE CO2
-         ========================================== -->
-
-    <div id="co2">—</div>
+    <div class="tapa-co2"></div>
 
 
-    <!-- MENSAJE DE ERROR -->
-    <div id="error"></div>
+    <!-- NÚMEROS DINÁMICOS -->
+
+    <div id="agua">
+      182.2
+    </div>
+
+
+    <div id="co2">
+      296.08
+    </div>
+
 
   </div>
 
 
   <script>
 
-    /* ==========================================
-       CONFIGURACIÓN DEL GOOGLE SHEET
-       ========================================== */
 
-    const SHEET_ID =
-      "1573VG0OhCjv03FrCrLKGTa1HkKU33GJto9isjJXvf5s";
+    /*
+      CARGAR DATOS
 
-    const SHEET_GID =
-      "2009250201";
+      La página NO entra a Google.
+
+      Solamente lee:
+
+      data.json
+
+      que está dentro de GitHub.
+    */
 
 
-    /* ==========================================
-       OBTENER DATOS DEL GOOGLE SHEET
-       ========================================== */
+    async function actualizar() {
 
-    async function actualizarDatos() {
 
       try {
 
-        /*
-          Leemos directamente las celdas F2 y G2
-          del Google Sheet.
 
-          F2 = CO2 evitado
-          G2 = Agua ahorrada
-        */
+        const respuesta = await fetch(
+          "data.json?v=" + Date.now()
+        );
 
-        const url =
-          "https://docs.google.com/spreadsheets/d/" +
-          SHEET_ID +
-          "/gviz/tq?tqx=out:csv&gid=" +
-          SHEET_GID +
-          "&range=F2:G2";
-
-
-        const respuesta = await fetch(url);
 
         if (!respuesta.ok) {
-          throw new Error("No se pudo acceder al Google Sheet");
+
+          throw new Error(
+            "No se pudo cargar data.json"
+          );
+
         }
 
 
-        const texto = await respuesta.text();
+        const datos =
+          await respuesta.json();
 
 
         /*
-          El resultado normalmente llega así:
-
-          "296.08","182.2"
+          AGUA
         */
 
-        const valores = texto
-          .replace(/\r/g, "")
-          .replace(/"/g, "")
-          .trim()
-          .split(",");
+        if (
+          datos.agua !== undefined &&
+          datos.agua !== null
+        ) {
 
+          document.getElementById(
+            "agua"
+          ).textContent = datos.agua;
 
-        const co2 = valores[0];
-        const agua = valores[1];
-
-
-        /* Mostrar agua */
-        if (agua !== undefined && agua !== "") {
-          document.getElementById("agua").textContent =
-            formatearNumero(agua);
         }
 
-
-        /* Mostrar CO2 */
-        if (co2 !== undefined && co2 !== "") {
-          document.getElementById("co2").textContent =
-            formatearNumero(co2);
-        }
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        document.getElementById("error").textContent =
-          "No se pudieron actualizar los datos.";
 
         /*
-          No mostramos el error sobre la pantalla.
-          Solo queda registrado en consola.
+          CO2
         */
+
+        if (
+          datos.co2 !== undefined &&
+          datos.co2 !== null
+        ) {
+
+          document.getElementById(
+            "co2"
+          ).textContent = datos.co2;
+
+        }
+
 
       }
+
+      catch (error) {
+
+        console.log(
+          "Error cargando datos:",
+          error
+        );
+
+      }
+
 
     }
 
 
-    /* ==========================================
-       FORMATO DE NÚMEROS
-       ========================================== */
+    /*
+      CARGA INICIAL
+    */
 
-    function formatearNumero(valor) {
-
-      const numero = Number(
-        String(valor).replace(",", ".")
-      );
+    actualizar();
 
 
-      if (isNaN(numero)) {
-        return "—";
-      }
+    /*
+      REVISA CADA 10 SEGUNDOS
+    */
 
+    setInterval(
+      actualizar,
+      10000
+    );
 
-      return new Intl.NumberFormat("es-PE", {
-        maximumFractionDigits: 2
-      }).format(numero);
-
-    }
-
-
-    /* ==========================================
-       PRIMERA CARGA
-       ========================================== */
-
-    actualizarDatos();
-
-
-    /* ==========================================
-       ACTUALIZAR CADA 10 SEGUNDOS
-       ========================================== */
-
-    setInterval(actualizarDatos, 10000);
 
   </script>
 
+
 </body>
-</html><
+
+</html>
