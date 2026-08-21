@@ -1,205 +1,120 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feria Trueque Falabella</title>
 
-  <meta charset="UTF-8">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+html, body {
+  width: 100%;
+  min-height: 100%;
+}
 
-  <title>Feria Trueque</title>
+body {
+  background: #62683f;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-  <style>
+.pantalla {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+.contenedor {
+  position: relative;
+  width: min(100vw, 580px);
+  overflow: hidden;
+}
 
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: #62693f;
-    }
+.imagen {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 
-    .pantalla {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      background: #62693f;
-    }
+/* NÚMEROS */
+.numero {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  text-align: center;
+  font-size: clamp(30px, 6vw, 38px);
+  font-weight: 500;
+  line-height: 1;
+  z-index: 5;
+}
 
-    .pieza {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      object-position: center;
-    }
+/* Posiciones de los números sobre el diseño */
+#agua {
+  top: 31.1%;
+  color: #73b9f2;
+}
 
-    /*
-      NÚMERO DE AGUA
-    */
-
-    #agua {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      top: 35.55%;
-
-      text-align: center;
-
-      font-family: Arial, Helvetica, sans-serif;
-      font-weight: bold;
-
-      font-size: clamp(
-        24px,
-        3.8vw,
-        52px
-      );
-
-      color: #7fcfff;
-
-      z-index: 10;
-    }
-
-    /*
-      NÚMERO DE CO2
-    */
-
-    #co2 {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      top: 71.05%;
-
-      text-align: center;
-
-      font-family: Arial, Helvetica, sans-serif;
-      font-weight: bold;
-
-      font-size: clamp(
-        24px,
-        3.8vw,
-        52px
-      );
-
-      color: #d7ff32;
-
-      z-index: 10;
-    }
-
-  </style>
-
+#co2 {
+  top: 69.8%;
+  color: #d5ff32;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="pantalla">
+<div class="pantalla">
 
+  <div class="contenedor">
+
+    <!-- DISEÑO ORIGINAL -->
     <img
-      class="pieza"
+      class="imagen"
       src="Dashboard-Trueque%203.jpg"
       alt="Feria Trueque Falabella"
     >
 
-    <div id="agua">
-      0
-    </div>
-
-    <div id="co2">
-      0
-    </div>
+    <!-- DATOS -->
+    <div id="agua" class="numero">182,20</div>
+    <div id="co2" class="numero">296,08</div>
 
   </div>
 
-  <script>
+</div>
 
-    async function actualizar() {
+<script>
+async function actualizarDatos() {
+  try {
 
-      try {
+    const respuesta = await fetch('data.json?v=' + Date.now());
+    const data = await respuesta.json();
 
-        const respuesta = await fetch(
-          "data.json?v=" + Date.now()
-        );
+    const agua = Number(data.agua);
+    const co2 = Number(data.co2);
 
-        if (!respuesta.ok) {
-          throw new Error(
-            "No se pudo cargar data.json"
-          );
-        }
+    document.getElementById('agua').textContent =
+      agua.toFixed(2).replace('.', ',');
 
-        const datos =
-          await respuesta.json();
+    document.getElementById('co2').textContent =
+      co2.toFixed(2).replace('.', ',');
 
-        if (
-          datos.agua !== undefined &&
-          datos.agua !== null
-        ) {
+  } catch (error) {
+    console.error('No se pudieron cargar los datos:', error);
+  }
+}
 
-          document.getElementById(
-            "agua"
-          ).textContent = Number(datos.agua).toLocaleString(
-            "es-PE",
-            {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2
-            }
-          );
-
-        }
-
-        if (
-          datos.co2 !== undefined &&
-          datos.co2 !== null
-        ) {
-
-          document.getElementById(
-            "co2"
-          ).textContent = Number(datos.co2).toLocaleString(
-            "es-PE",
-            {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2
-            }
-          );
-
-        }
-
-      }
-
-      catch (error) {
-
-        console.log(
-          "Error cargando datos:",
-          error
-        );
-
-      }
-
-    }
-
-    actualizar();
-
-    setInterval(
-      actualizar,
-      10000
-    );
-
-  </script>
+actualizarDatos();
+</script>
 
 </body>
-
 </html>
