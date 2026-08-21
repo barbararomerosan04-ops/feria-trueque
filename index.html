@@ -25,34 +25,46 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* CONTENEDOR GENERAL */
+
 .pantalla {
     width: 100%;
     min-height: 100vh;
+
     display: flex;
     justify-content: center;
     align-items: flex-start;
 }
 
+/* PIEZA */
+
 .contenedor {
     position: relative;
+
     width: 100%;
     max-width: 430px;
+
     margin: 0 auto;
 }
+
+/* IMAGEN */
 
 .imagen {
     width: 100%;
     height: auto;
+
     display: block;
 }
 
-/* =========================
+/* ================================
    NÚMEROS
-   ========================= */
+   ================================ */
 
 .numero {
     position: absolute;
+
     left: 50%;
+
     transform: translate(-50%, -50%);
 
     width: 60%;
@@ -60,32 +72,38 @@ body {
     text-align: center;
 
     font-weight: 400;
+
     line-height: 1;
 
-    z-index: 10;
-
     white-space: nowrap;
+
+    z-index: 20;
 }
 
-/* =========================
-   AGUA
-   ========================= */
+/* AGUA */
 
 #agua {
-    top: 35.8%;
+    top: 34.2%;
+
     color: #73b9f2;
+
     font-size: 48px;
 }
 
-/* =========================
-   CO2
-   ========================= */
+/* CO2 */
 
 #co2 {
-    top: 73.8%;
+    top: 73.2%;
+
     color: #d5ff32;
+
     font-size: 48px;
 }
+
+
+/* ================================
+   RESPONSIVE
+   ================================ */
 
 @media (max-width: 430px) {
 
@@ -99,6 +117,7 @@ body {
 </style>
 </head>
 
+
 <body>
 
 <div class="pantalla">
@@ -111,13 +130,24 @@ body {
             alt="Feria Trueque Falabella"
         >
 
-        <div id="agua" class="numero">182,20</div>
+        <div
+            id="agua"
+            class="numero"
+        >
+            182,20
+        </div>
 
-        <div id="co2" class="numero">296,08</div>
+        <div
+            id="co2"
+            class="numero"
+        >
+            296,08
+        </div>
 
     </div>
 
 </div>
+
 
 <script>
 
@@ -131,15 +161,22 @@ async function actualizarDatos() {
 
         const data = await respuesta.json();
 
+
+        /* AGUA */
+
         document.getElementById('agua').textContent =
             Number(data.agua)
             .toFixed(2)
             .replace('.', ',');
 
+
+        /* CO2 */
+
         document.getElementById('co2').textContent =
             Number(data.co2)
             .toFixed(2)
             .replace('.', ',');
+
 
     } catch (error) {
 
@@ -151,6 +188,9 @@ async function actualizarDatos() {
     }
 
 }
+
+
+/* CARGAR DATOS */
 
 actualizarDatos();
 
