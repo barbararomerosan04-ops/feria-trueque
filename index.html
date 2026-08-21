@@ -3,88 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Feria Trueque Falabella</title>
 
 <style>
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 html,
 body {
-  width: 100%;
-  min-height: 100%;
+    width: 100%;
+    min-height: 100%;
 }
 
 body {
-  background: #62683f;
-  font-family: Arial, Helvetica, sans-serif;
+    background: #62683f;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .pantalla {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 10px 0;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .contenedor {
-  position: relative;
-  width: min(96vw, 430px);
-  margin: 0 auto;
-  overflow: hidden;
+    position: relative;
+    width: 92vw;
+    max-width: 430px;
+    margin: 0 auto;
 }
 
 .imagen {
-  width: 100%;
-  height: auto;
-  display: block;
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
-/* NÚMEROS */
+/* =========================
+   NÚMEROS
+   ========================= */
 
 .numero {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 55%;
-  text-align: center;
-  font-size: clamp(32px, 10vw, 48px);
-  font-weight: 400;
-  line-height: 1;
-  z-index: 5;
-  white-space: nowrap;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 48%;
+
+    text-align: center;
+
+    font-weight: 400;
+    line-height: 1;
+
+    z-index: 10;
+
+    white-space: nowrap;
 }
 
 /* AGUA */
+
 #agua {
-  top: 34.7%;
-  color: #73b9f2;
+    top: 37.0%;
+    color: #73b9f2;
+    font-size: clamp(34px, 9vw, 48px);
 }
 
 /* CO2 */
+
 #co2 {
-  top: 72.8%;
-  color: #d5ff32;
+    top: 74.8%;
+    color: #d5ff32;
+    font-size: clamp(34px, 9vw, 48px);
 }
 
-@media (max-width: 500px) {
-  .pantalla {
-    padding: 6px 0;
-  }
-
-  .contenedor {
-    width: 96vw;
-  }
-
-  .numero {
-    font-size: clamp(30px, 11vw, 46px);
-  }
-}
 </style>
 </head>
 
@@ -92,53 +90,67 @@ body {
 
 <div class="pantalla">
 
-  <div class="contenedor">
+    <div class="contenedor">
 
-    <img
-      class="imagen"
-      src="Dashboard-Trueque%203.jpg"
-      alt="Feria Trueque Falabella"
-    >
+        <img
+            class="imagen"
+            src="Dashboard-Trueque%203.jpg"
+            alt="Feria Trueque Falabella"
+        >
 
-    <div id="agua" class="numero">182,20</div>
+        <div
+            id="agua"
+            class="numero"
+        >
+            182,20
+        </div>
 
-    <div id="co2" class="numero">296,08</div>
+        <div
+            id="co2"
+            class="numero"
+        >
+            296,08
+        </div>
 
-  </div>
+    </div>
 
 </div>
 
 <script>
+
 async function actualizarDatos() {
 
-  try {
+    try {
 
-    const respuesta = await fetch('data.json?v=' + Date.now());
+        const respuesta = await fetch(
+            'data.json?v=' + Date.now()
+        );
 
-    const data = await respuesta.json();
+        const data = await respuesta.json();
 
-    document.getElementById('agua').textContent =
-      Number(data.agua)
-        .toFixed(2)
-        .replace('.', ',');
+        document.getElementById('agua').textContent =
+            Number(data.agua)
+            .toFixed(2)
+            .replace('.', ',');
 
-    document.getElementById('co2').textContent =
-      Number(data.co2)
-        .toFixed(2)
-        .replace('.', ',');
+        document.getElementById('co2').textContent =
+            Number(data.co2)
+            .toFixed(2)
+            .replace('.', ',');
 
-  } catch (error) {
+    } catch (error) {
 
-    console.error(
-      'No se pudieron cargar los datos:',
-      error
-    );
+        console.error(
+            'No se pudieron cargar los datos:',
+            error
+        );
 
-  }
+    }
 
 }
 
 actualizarDatos();
+
 </script>
 
 </body>
