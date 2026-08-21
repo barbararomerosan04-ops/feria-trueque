@@ -22,19 +22,39 @@ jobs:
       - name: Crear data.json
         run: |
           python - <<'PY'
-          import csv, json
+          import csv
+          import json
 
-          with open("datos.csv", encoding="utf-8") as f:
+          with open("datos.csv", encoding="utf-8-sig") as f:
               filas = list(csv.reader(f))
 
-          agua = filas[1][0]
-          co2 = filas[1][1]
+          print("Datos encontrados:")
+          for fila in filas[:5]:
+              print(fila)
+
+          # Buscar la fila que contiene los valores numéricos
+          for fila in filas:
+              numeros = []
+
+              for valor in fila:
+                  try:
+                      numeros.append(float(valor.replace(",", ".")))
+                  except:
+                      pass
+
+              if len(numeros) >= 2:
+                  agua = numeros[0]
+                  co2 = numeros[1]
+                  break
 
           with open("data.json", "w", encoding="utf-8") as f:
               json.dump({
-                  "agua": float(agua),
-                  "co2": float(co2)
-              }, f)
+                  "agua": agua,
+                  "co2": co2
+              }, f, ensure_ascii=False, indent=2)
+
+          print("Agua:", agua)
+          print("CO2:", co2)
           PY
 
       - name: Guardar cambios
