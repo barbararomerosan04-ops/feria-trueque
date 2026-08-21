@@ -2,16 +2,10 @@
 <html lang="es">
 
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Feria Trueque</title>
-
 
   <style>
 
@@ -21,114 +15,65 @@
       box-sizing: border-box;
     }
 
-
     html,
     body {
-
       width: 100%;
       height: 100%;
-
-      margin: 0;
-      padding: 0;
-
       overflow: hidden;
-
       background: #62693f;
-
     }
 
-
     /*
-      CONTENEDOR PRINCIPAL
-
-      Mantiene exactamente la proporción
-      vertical de la pieza.
+      PANTALLA COMPLETA
     */
 
     .pantalla {
-
-      position: relative;
-
       width: 100vw;
       height: 100vh;
 
       display: flex;
-
       justify-content: center;
       align-items: center;
 
       overflow: hidden;
-
       background: #62693f;
-
     }
 
 
     /*
-      LA PIEZA ORIGINAL
+      CONTENEDOR DE LA PIEZA
 
-      Se adapta a la pantalla sin deformarse.
+      IMPORTANTE:
+      Todo lo que se mueve encima de la imagen
+      está dentro de este contenedor.
+
+      Así los números mantienen exactamente
+      la posición de tu diseño.
+    */
+
+    .pieza-container {
+      position: relative;
+
+      height: 100vh;
+      width: auto;
+
+      aspect-ratio: auto;
+
+      flex-shrink: 0;
+    }
+
+
+    /*
+      IMAGEN ORIGINAL
     */
 
     .pieza {
+      display: block;
 
-      position: absolute;
+      height: 100vh;
+      width: auto;
 
-      width: 100%;
-      height: 100%;
-
-      object-fit: contain;
-
-      object-position: center;
-
-    }
-
-
-    /*
-      CAPA PARA TAPAR EL NÚMERO
-      ORIGINAL DEL AGUA
-    */
-
-    .tapa-agua {
-
-      position: absolute;
-
-      width: 19.5%;
-      height: 4.3%;
-
-      left: 40.25%;
-      top: 35.1%;
-
-      background: #6b7047;
-
-      border: 2px solid #8ed7ff;
-
-      border-radius: 25px;
-
-    }
-
-
-    /*
-      CAPA PARA TAPAR EL NÚMERO
-      ORIGINAL DEL CO2
-    */
-
-    .tapa-co2 {
-
-      position: absolute;
-
-      width: 19.5%;
-      height: 4.3%;
-
-      left: 40.25%;
-      top: 70.6%;
-
-      background: #6b7047;
-
-      border: 2px solid #d7ff4c;
-
-      border-radius: 25px;
-
+      max-width: none;
     }
 
 
@@ -140,28 +85,30 @@
 
       position: absolute;
 
-      left: 0;
+      /*
+        Posición dentro de la pieza
+      */
 
-      width: 100%;
+      left: 31.5%;
+      top: 34.8%;
 
-      top: 35.55%;
+      width: 37%;
 
       text-align: center;
 
       font-family: Arial, Helvetica, sans-serif;
 
-      font-weight: bold;
+      font-weight: 700;
 
-      font-size: clamp(
-        25px,
-        5vw,
-        70px
-      );
+      font-size: 5.2vh;
+
+      line-height: 1;
 
       color: #7fcfff;
 
       z-index: 10;
 
+      white-space: nowrap;
     }
 
 
@@ -173,28 +120,26 @@
 
       position: absolute;
 
-      left: 0;
+      left: 31.5%;
+      top: 70.2%;
 
-      width: 100%;
-
-      top: 71.05%;
+      width: 37%;
 
       text-align: center;
 
       font-family: Arial, Helvetica, sans-serif;
 
-      font-weight: bold;
+      font-weight: 700;
 
-      font-size: clamp(
-        25px,
-        5vw,
-        70px
-      );
+      font-size: 5.2vh;
+
+      line-height: 1;
 
       color: #d7ff32;
 
       z-index: 10;
 
+      white-space: nowrap;
     }
 
 
@@ -205,79 +150,54 @@
 
 <body>
 
-
   <div class="pantalla">
 
+    <div class="pieza-container">
 
-    <!-- DISEÑO ORIGINAL -->
+      <!-- IMAGEN ORIGINAL -->
 
-    <img
-      class="pieza"
-      src="Dashboard-Trueque%203.jpg"
-      alt=""
-    >
-
-
-    <!-- TAPAMOS LOS NÚMEROS IMPRESOS -->
-
-    <div class="tapa-agua"></div>
-
-    <div class="tapa-co2"></div>
+      <img
+        class="pieza"
+        src="Dashboard-Trueque%203.jpg"
+        alt="Feria Trueque Falabella"
+      >
 
 
-    <!-- NÚMEROS DINÁMICOS -->
+      <!-- NÚMEROS DINÁMICOS -->
 
-    <div id="agua">
-      182.2
+      <div id="agua">182.2</div>
+
+      <div id="co2">296.08</div>
+
     </div>
-
-
-    <div id="co2">
-      296.08
-    </div>
-
 
   </div>
 
 
   <script>
 
-
     /*
-      CARGAR DATOS
+      CARGAR DATOS DESDE data.json
 
-      La página NO entra a Google.
+      La página NO se conecta a Google.
 
-      Solamente lee:
-
-      data.json
-
-      que está dentro de GitHub.
+      Lee únicamente el archivo data.json
+      que está alojado en GitHub.
     */
-
 
     async function actualizar() {
 
-
       try {
-
 
         const respuesta = await fetch(
           "data.json?v=" + Date.now()
         );
 
-
         if (!respuesta.ok) {
-
-          throw new Error(
-            "No se pudo cargar data.json"
-          );
-
+          throw new Error("No se pudo cargar data.json");
         }
 
-
-        const datos =
-          await respuesta.json();
+        const datos = await respuesta.json();
 
 
         /*
@@ -289,9 +209,8 @@
           datos.agua !== null
         ) {
 
-          document.getElementById(
-            "agua"
-          ).textContent = datos.agua;
+          document.getElementById("agua").textContent =
+            datos.agua;
 
         }
 
@@ -305,12 +224,10 @@
           datos.co2 !== null
         ) {
 
-          document.getElementById(
-            "co2"
-          ).textContent = datos.co2;
+          document.getElementById("co2").textContent =
+            datos.co2;
 
         }
-
 
       }
 
@@ -323,7 +240,6 @@
 
       }
 
-
     }
 
 
@@ -335,7 +251,7 @@
 
 
     /*
-      REVISA CADA 10 SEGUNDOS
+      ACTUALIZA CADA 10 SEGUNDOS
     */
 
     setInterval(
@@ -343,9 +259,7 @@
       10000
     );
 
-
   </script>
-
 
 </body>
 
