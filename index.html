@@ -19,9 +19,6 @@ html, body {
 
 body {
   background: #62683f;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -35,7 +32,8 @@ body {
 
 .contenedor {
   position: relative;
-  width: min(100vw, 580px);
+  width: min(100vw, 760px);
+  margin: 0 auto;
   overflow: hidden;
 }
 
@@ -45,27 +43,25 @@ body {
   display: block;
 }
 
-/* NÚMEROS */
 .numero {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 60%;
+  width: 55%;
   text-align: center;
-  font-size: clamp(30px, 6vw, 38px);
+  font-size: 38px;
   font-weight: 500;
   line-height: 1;
   z-index: 5;
 }
 
-/* Posiciones de los números sobre el diseño */
 #agua {
-  top: 31.1%;
+  top: 36.7%;
   color: #73b9f2;
 }
 
 #co2 {
-  top: 69.8%;
+  top: 75.7%;
   color: #d5ff32;
 }
 </style>
@@ -74,39 +70,31 @@ body {
 <body>
 
 <div class="pantalla">
-
   <div class="contenedor">
 
-    <!-- DISEÑO ORIGINAL -->
     <img
       class="imagen"
       src="Dashboard-Trueque%203.jpg"
       alt="Feria Trueque Falabella"
     >
 
-    <!-- DATOS -->
     <div id="agua" class="numero">182,20</div>
     <div id="co2" class="numero">296,08</div>
 
   </div>
-
 </div>
 
 <script>
 async function actualizarDatos() {
   try {
-
     const respuesta = await fetch('data.json?v=' + Date.now());
     const data = await respuesta.json();
 
-    const agua = Number(data.agua);
-    const co2 = Number(data.co2);
-
     document.getElementById('agua').textContent =
-      agua.toFixed(2).replace('.', ',');
+      Number(data.agua).toFixed(2).replace('.', ',');
 
     document.getElementById('co2').textContent =
-      co2.toFixed(2).replace('.', ',');
+      Number(data.co2).toFixed(2).replace('.', ',');
 
   } catch (error) {
     console.error('No se pudieron cargar los datos:', error);
