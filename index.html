@@ -1,171 +1,205 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Feria Trueque Falabella</title>
+  <meta charset="UTF-8">
 
-<style>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+  <title>Feria Trueque</title>
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #62693f;
-}
+  <style>
 
-/* PANTALLA */
-.pantalla {
-  width: 100vw;
-  height: 100vh;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #62693f;
+    }
 
-  background: #62693f;
-}
+    .pantalla {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: #62693f;
+    }
 
-/* CONTENEDOR DE LA PIEZA */
-.pieza {
-  position: relative;
+    .pieza {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
 
-  height: 87.55vh;
-  width: auto;
+    /*
+      NÚMERO DE AGUA
+    */
 
-  aspect-ratio: 1 / 3;
+    #agua {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      top: 35.55%;
 
-  flex-shrink: 0;
-}
+      text-align: center;
 
-/* IMAGEN */
-.pieza img {
-  width: 100%;
-  height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
 
-  display: block;
+      font-size: clamp(
+        24px,
+        3.8vw,
+        52px
+      );
 
-  object-fit: fill;
-}
+      color: #7fcfff;
 
-/* =========================
-   AGUA
-   ========================= */
+      z-index: 10;
+    }
 
-#agua {
-  position: absolute;
+    /*
+      NÚMERO DE CO2
+    */
 
-  left: 50%;
-  top: 34.45%;
+    #co2 {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      top: 71.05%;
 
-  transform: translate(-50%, -50%);
+      text-align: center;
 
-  width: 55%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
 
-  text-align: center;
+      font-size: clamp(
+        24px,
+        3.8vw,
+        52px
+      );
 
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 36px;
-  font-weight: 700;
+      color: #d7ff32;
 
-  color: #7fcfff;
+      z-index: 10;
+    }
 
-  line-height: 1;
+  </style>
 
-  z-index: 10;
-}
-
-
-/* =========================
-   CO2
-   ========================= */
-
-#co2 {
-  position: absolute;
-
-  left: 50%;
-  top: 73.55%;
-
-  transform: translate(-50%, -50%);
-
-  width: 55%;
-
-  text-align: center;
-
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 36px;
-  font-weight: 700;
-
-  color: #d7ff32;
-
-  line-height: 1;
-
-  z-index: 10;
-}
-
-</style>
 </head>
 
 <body>
 
-<div class="pantalla">
-
-  <div class="pieza">
+  <div class="pantalla">
 
     <img
+      class="pieza"
       src="Dashboard-Trueque%203.jpg"
       alt="Feria Trueque Falabella"
     >
 
-    <div id="agua">182.2</div>
+    <div id="agua">
+      0
+    </div>
 
-    <div id="co2">296.08</div>
+    <div id="co2">
+      0
+    </div>
 
   </div>
 
-</div>
+  <script>
 
+    async function actualizar() {
 
-<script>
+      try {
 
-async function actualizar() {
+        const respuesta = await fetch(
+          "data.json?v=" + Date.now()
+        );
 
-  try {
+        if (!respuesta.ok) {
+          throw new Error(
+            "No se pudo cargar data.json"
+          );
+        }
 
-    const respuesta = await fetch(
-      "data.json?v=" + Date.now()
+        const datos =
+          await respuesta.json();
+
+        if (
+          datos.agua !== undefined &&
+          datos.agua !== null
+        ) {
+
+          document.getElementById(
+            "agua"
+          ).textContent = Number(datos.agua).toLocaleString(
+            "es-PE",
+            {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2
+            }
+          );
+
+        }
+
+        if (
+          datos.co2 !== undefined &&
+          datos.co2 !== null
+        ) {
+
+          document.getElementById(
+            "co2"
+          ).textContent = Number(datos.co2).toLocaleString(
+            "es-PE",
+            {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2
+            }
+          );
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.log(
+          "Error cargando datos:",
+          error
+        );
+
+      }
+
+    }
+
+    actualizar();
+
+    setInterval(
+      actualizar,
+      10000
     );
 
-    const datos = await respuesta.json();
-
-    if (datos.agua !== undefined) {
-      document.getElementById("agua").textContent = datos.agua;
-    }
-
-    if (datos.co2 !== undefined) {
-      document.getElementById("co2").textContent = datos.co2;
-    }
-
-  } catch (error) {
-
-    console.log("Error cargando datos:", error);
-
-  }
-
-}
-
-actualizar();
-
-setInterval(actualizar, 10000);
-
-</script>
+  </script>
 
 </body>
+
 </html>
