@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=640, initial-scale=1.0">
+
+  <title>Feria.Trueque</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 640px;
+      height: 1920px;
+      overflow: hidden;
+      background: #59633a;
+    }
+
+    #pagina {
+      position: relative;
+      width: 640px;
+      height: 1920px;
+      overflow: hidden;
+    }
+
+    /* IMAGEN DE FONDO */
+    #fondo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 640px;
+      height: 1920px;
+      display: block;
+      object-fit: fill;
+      z-index: 1;
+    }
+
+    /* =========================
+       DATO DE AGUA
+       ========================= */
+
+    #agua {
+      position: absolute;
+
+      /*
+        Posición del número de agua.
+        Si después necesitamos moverlo,
+        modificamos solamente estos valores.
+      */
+      left: 320px;
+      top: 690px;
+
+      transform: translate(-50%, -50%);
+
+      width: 250px;
+
+      text-align: center;
+
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 55px;
+      font-weight: bold;
+
+      color: #75c8ff;
+
+      z-index: 10;
+    }
+
+
+    /* =========================
+       DATO DE CO2
+       ========================= */
+
+    #co2 {
+      position: absolute;
+
+      /*
+        Posición del número de CO2.
+      */
+      left: 320px;
+      top: 1430px;
+
+      transform: translate(-50%, -50%);
+
+      width: 250px;
+
+      text-align: center;
+
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 55px;
+      font-weight: bold;
+
+      color: #e3ff00;
+
+      z-index: 10;
+    }
+
+
+    /* Mensaje de error oculto */
+    #error {
+      display: none;
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+      width: 600px;
+      padding: 10px;
+
+      background: rgba(255, 0, 0, 0.8);
+      color: white;
+
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+
+      z-index: 100;
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <div id="pagina">
+
+    <!-- ==========================================
+         IMAGEN DEL DISEÑO
+         ========================================== -->
+
+    <img
+      id="fondo"
+      src="imagen-dashboard.png"
+      alt="Feria Trueque Falabella"
+    >
+
+
+    <!-- ==========================================
+         DATO DE AGUA
+         ========================================== -->
+
+    <div id="agua">—</div>
+
+
+    <!-- ==========================================
+         DATO DE CO2
+         ========================================== -->
+
+    <div id="co2">—</div>
+
+
+    <!-- MENSAJE DE ERROR -->
+    <div id="error"></div>
+
+  </div>
+
+
+  <script>
+
+    /* ==========================================
+       CONFIGURACIÓN DEL GOOGLE SHEET
+       ========================================== */
+
+    const SHEET_ID =
+      "1573VG0OhCjv03FrCrLKGTa1HkKU33GJto9isjJXvf5s";
+
+    const SHEET_GID =
+      "2009250201";
+
+
+    /* ==========================================
+       OBTENER DATOS DEL GOOGLE SHEET
+       ========================================== */
+
+    async function actualizarDatos() {
+
+      try {
+
+        /*
+          Leemos directamente las celdas F2 y G2
+          del Google Sheet.
+
+          F2 = CO2 evitado
+          G2 = Agua ahorrada
+        */
+
+        const url =
+          "https://docs.google.com/spreadsheets/d/" +
+          SHEET_ID +
+          "/gviz/tq?tqx=out:csv&gid=" +
+          SHEET_GID +
+          "&range=F2:G2";
+
+
+        const respuesta = await fetch(url);
+
+        if (!respuesta.ok) {
+          throw new Error("No se pudo acceder al Google Sheet");
+        }
+
+
+        const texto = await respuesta.text();
+
+
+        /*
+          El resultado normalmente llega así:
+
+          "296.08","182.2"
+        */
+
+        const valores = texto
+          .replace(/\r/g, "")
+          .replace(/"/g, "")
+          .trim()
+          .split(",");
+
+
+        const co2 = valores[0];
+        const agua = valores[1];
+
+
+        /* Mostrar agua */
+        if (agua !== undefined && agua !== "") {
+          document.getElementById("agua").textContent =
+            formatearNumero(agua);
+        }
+
+
+        /* Mostrar CO2 */
+        if (co2 !== undefined && co2 !== "") {
+          document.getElementById("co2").textContent =
+            formatearNumero(co2);
+        }
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("error").textContent =
+          "No se pudieron actualizar los datos.";
+
+        /*
+          No mostramos el error sobre la pantalla.
+          Solo queda registrado en consola.
+        */
+
+      }
+
+    }
+
+
+    /* ==========================================
+       FORMATO DE NÚMEROS
+       ========================================== */
+
+    function formatearNumero(valor) {
+
+      const numero = Number(
+        String(valor).replace(",", ".")
+      );
+
+
+      if (isNaN(numero)) {
+        return "—";
+      }
+
+
+      return new Intl.NumberFormat("es-PE", {
+        maximumFractionDigits: 2
+      }).format(numero);
+
+    }
+
+
+    /* ==========================================
+       PRIMERA CARGA
+       ========================================== */
+
+    actualizarDatos();
+
+
+    /* ==========================================
+       ACTUALIZAR CADA 10 SEGUNDOS
+       ========================================== */
+
+    setInterval(actualizarDatos, 10000);
+
+  </script>
+
+</body>
+</html><
