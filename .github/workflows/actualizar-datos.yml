@@ -17,7 +17,7 @@ jobs:
 
       - name: Descargar datos del Sheet
         run: |
-          curl -L "https://docs.google.com/spreadsheets/d/1573VG0OhCjv03FrCrLKGTa1HkKU33GJto9isjJXvf5s/export?format=csv&gid=2009250201" -o datos.csv
+          curl -L "https://docs.google.com/spreadsheets/d/10j4gAOHCmz3owbp4nOpT0oXJgRu_w9gfIsluZFydwXI/export?format=csv&gid=2009250201" -o datos.csv
 
       - name: Crear data.json
         run: |
