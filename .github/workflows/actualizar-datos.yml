@@ -25,12 +25,15 @@ jobs:
           import csv
           import json
 
-          with open("datos.csv", encoding="utf-8") as f:
+          with open("datos.csv", encoding="utf-8-sig", newline="") as f:
               filas = list(csv.reader(f))
 
           # F = CO2 / G = Agua
-          co2 = filas[1][5].replace(",", ".")
-          agua = filas[1][6].replace(",", ".")
+          co2 = filas[1][5].strip().replace(",", ".")
+          agua = filas[1][6].strip().replace(",", ".")
+
+          print("Valor CO2 encontrado:", co2)
+          print("Valor Agua encontrado:", agua)
 
           with open("data.json", "w", encoding="utf-8") as f:
               json.dump({
@@ -38,8 +41,7 @@ jobs:
                   "co2": float(co2)
               }, f)
 
-          print("Agua:", agua)
-          print("CO2:", co2)
+          print("data.json actualizado correctamente")
           PY
 
       - name: Guardar cambios
